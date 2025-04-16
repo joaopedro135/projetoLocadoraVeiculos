@@ -1,3 +1,4 @@
+package Modelo;
 public class Funcionario extends Entidade {
     private String nome;
     private double comissao;

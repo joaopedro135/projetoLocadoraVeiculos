@@ -1,3 +1,4 @@
+package Modelo;
 public class Veiculo extends Entidade {
     private String marca;
     private String modelo;

@@ -1,3 +1,4 @@
+package Modelo;
 public class Locacao extends Entidade {
     private Cliente cliente;
     private Veiculo veiculo;

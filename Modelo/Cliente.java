@@ -1,3 +1,4 @@
+package Modelo;
 public class Cliente extends Entidade {
     private String nome;
     //private float contaBancaria;
