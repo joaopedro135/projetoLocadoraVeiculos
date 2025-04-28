@@ -33,6 +33,10 @@ public class Locacao extends Entidade {
 
     @Override
     public String toString () {
-        return this.cliente + "\n" + this.aluguel.getVeiculo() + "\nDias Alugados: " + this.aluguel.getDiasDeAluguel() + "\nValor total: " + this.aluguel.getValorTotal() + "\n\n" + this.funcionario.getNome() + "\n\n";
+        return this.cliente + "\n" + 
+               this.aluguel.getVeiculo() + 
+               "\nDias Alugados: " + this.aluguel.getDiasDeAluguel() + 
+               "\nValor total: " + this.aluguel.getValorTotal() + "\n\n" + 
+               this.funcionario.getNome() + "\n\n";
     }
 }
