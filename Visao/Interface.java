@@ -23,6 +23,35 @@ public class Interface {
         Cliente cliente = new Cliente(id, nome);
         bancoDeDados.getClientes().insercao(cliente);
     }
+
+    public static void alterarCliente () {
+        int id;
+        String nome;
+        try {
+            System.out.println("Digite o id do cliente");
+            id = scan.nextInt();
+        } catch (Exception e) {
+            System.out.println("Id invalido");
+            return;
+        }
+        System.out.println("Digite o novo nome do cliente");
+        nome = scan.nextLine();
+        Cliente cliente = new Cliente(id, nome);
+        bancoDeDados.getClientes().alteracao(cliente, id);
+    }
+
+    public static void apagarCliente(){
+        int id;
+        try {
+            System.out.println("Digite o id do cliente");
+            id = scan.nextInt();
+        } catch (Exception e) {
+            System.out.println("Id invalido");
+            return;
+        }
+        bancoDeDados.getClientes().remover(id);
+    }
+
     public static void main(String[] args) {
         String op;
         System.out.println("Bem vindo a Uma Locadora Chamada Maciota!!!");
@@ -40,7 +69,7 @@ public class Interface {
             
             switch (op) {
                 case "1":
-                    while (true) {
+                    while (op != "0") {
                         System.out.println("===== MENU CLIENTE =====");
                         System.out.println("1 - Inserir");
                         System.out.println("2 - Alterar");
@@ -58,14 +87,19 @@ public class Interface {
                                 adicionarCliente();
                                 break;
                             case "2":
+                                alterarCliente();
                                 break;
                             case "3":
+                                //apagarCliente();
                                 break;
                             case "4":
+                                //buscarClientePorId();
                                 break;
                             case "5":
+                                //visualizarTodosClientes();
                                 break;
-                            case "0":
+                            default:
+                                System.out.println("Número inválido");
                         }
                     }
                     break;

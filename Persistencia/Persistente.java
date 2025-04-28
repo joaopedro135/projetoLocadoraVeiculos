@@ -17,12 +17,24 @@ public class Persistente {
         array.add(entidade);
     }
 
-    public void alteracao (Entidade entidade, int indice) {
-        array.set(indice, entidade);
+    public void alteracao (Entidade entidade, int id) {
+        for (int i = 0; i < array.size(); i++) {
+            if (array.get(i).getId() == id) {
+                array.set(i, entidade);
+                return;
+            }
+        }
+        System.out.println("ID não encontrado");
     }
 
-    public void remover (int indice) {
-        array.remove(indice);
+    public void remover (int id) {
+        for (int i = 0; i < array.size(); i++) {
+            if (array.get(i).getId() == id) {
+                array.remove(i);
+                return;
+            }
+        }
+        System.out.println("ID não encontrado");
     }
 
     public ArrayList<Entidade> getArray () {
