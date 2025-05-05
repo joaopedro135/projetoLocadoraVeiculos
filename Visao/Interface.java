@@ -12,6 +12,7 @@ public class Interface {
     public static void adicionarCliente() {
         int id;
         String nome;
+        scan.nextLine();
         System.out.println("Digite nome do cliente");
         nome = scan.nextLine();
         try {
@@ -53,6 +54,13 @@ public class Interface {
             System.out.println("Id invalido");
             return;
         }
+        for (Entidade locacao : bancoDeDados.getLocacao().getArray()) {
+            if (((Locacao)locacao).getCliente().getId() == id) {
+                System.out.println("Cliente possui locação ativa, não é possível apagar.");
+                return;
+            }
+        }
+            
         bancoDeDados.getClientes().remover(id);
     }
 
@@ -66,11 +74,11 @@ public class Interface {
             System.out.println("Id invalido");
             return;
         }
-        bancoDeDados.getClientes().procuraId(id);
+        System.out.println(bancoDeDados.getClientes().procuraId(id));
     }
 
     public static void visualizarTodosClientes() {
-        System.out.println(bancoDeDados.getClientes());
+        System.out.print(bancoDeDados.getClientes());
     }
 
     // Veiculo
@@ -78,6 +86,7 @@ public class Interface {
         int id, ano;
         double valorDiario;
         String marca, modelo, cor;
+        scan.nextLine();
         System.out.println("Digite a marca do Veiculo:");
         marca = scan.nextLine();
         System.out.println("Digite a modelo do Veiculo:");
@@ -90,6 +99,7 @@ public class Interface {
             scan.nextLine();
             System.out.println("Digite o valor da diaria do Veiculo:");
             valorDiario = scan.nextDouble();
+            scan.nextLine();
             System.out.println("Digite o id do Veiculo:");
             id = scan.nextInt();
             scan.nextLine();
@@ -105,6 +115,7 @@ public class Interface {
         int id, ano;
         double valorDiario;
         String marca, modelo, cor;
+        scan.nextLine();
         System.out.println("Digite a marca do Veiculo");
         marca = scan.nextLine();
         System.out.println("Digite o modelo do Veiculo");
@@ -139,6 +150,14 @@ public class Interface {
             System.out.println("Id invalido");
             return;
         }
+
+        for (Entidade locacao : bancoDeDados.getLocacao().getArray()) {
+            if (((Locacao)locacao).getAluguel().getVeiculo().getId() == id) {
+                System.out.println("Veiculo possui locação ativa, não é possível apagar.");
+                return;
+            }
+        }
+
         bancoDeDados.getVeiculos().remover(id);
     }
 
@@ -152,17 +171,18 @@ public class Interface {
             System.out.println("Id invalido");
             return;
         }
-        bancoDeDados.getVeiculos().procuraId(id);
+        System.out.println(bancoDeDados.getVeiculos().procuraId(id));
     }
 
     public static void visualizarTodosVeiculos() {
-        System.out.println(bancoDeDados.getVeiculos());
+        System.out.print(bancoDeDados.getVeiculos());
     }
 
     // Funcionario
     public static void adicionarFuncionario() {
         int id;
         String nome;
+        scan.nextLine();
         System.out.println("Digite nome do Funcionario");
         nome = scan.nextLine();
         try {
@@ -204,6 +224,12 @@ public class Interface {
             System.out.println("Id invalido");
             return;
         }
+        for (Entidade locacao : bancoDeDados.getLocacao().getArray()) {
+            if (((Locacao)locacao).getFuncionario().getId() == id) {
+                System.out.println("Funcionario possui locação ativa, não é possível apagar.");
+                return;
+            }
+        }
         bancoDeDados.getFuncionarios().remover(id);
     }
 
@@ -217,11 +243,11 @@ public class Interface {
             System.out.println("Id invalido");
             return;
         }
-        bancoDeDados.getFuncionarios().procuraId(id);
+        System.out.println(bancoDeDados.getFuncionarios().procuraId(id));
     }
 
     public static void visualizarTodosFuncionarios() {
-        System.out.println(bancoDeDados.getFuncionarios());
+        System.out.print(bancoDeDados.getFuncionarios());
     }
 
     // Locacao
@@ -232,6 +258,7 @@ public class Interface {
         Veiculo veiculo;
         int diasAlugados;
         try {
+            scan.nextLine();
             System.out.println("Digite o id do cliente");
             idCliente = scan.nextInt();
             scan.nextLine();
@@ -254,6 +281,7 @@ public class Interface {
         cliente = (Cliente)bancoDeDados.getClientes().procuraId(idCliente);
         funcionario = (Funcionario)bancoDeDados.getFuncionarios().procuraId(idFuncionario);
         veiculo = (Veiculo)bancoDeDados.getVeiculos().procuraId(idVeiculo);
+        funcionario.addComissao(diasAlugados * veiculo.getValorDiario());
         Locacao locacao = new Locacao(id, cliente, veiculo, funcionario, diasAlugados);
         bancoDeDados.getLocacao().insercao(locacao);
     }
@@ -265,6 +293,7 @@ public class Interface {
         Veiculo veiculo;
         int diasAlugados;
         try {
+            scan.nextLine();
             System.out.println("Digite o id do cliente");
             idCliente = scan.nextInt();
             scan.nextLine();
@@ -314,17 +343,17 @@ public class Interface {
             System.out.println("Id invalido");
             return;
         }
-        bancoDeDados.getLocacao().procuraId(id);
+        System.out.println(bancoDeDados.getLocacao().procuraId(id));
     }
 
     public static void visualizarTodasLocacoes() {
-        System.out.println(bancoDeDados.getLocacao());
+        System.out.print(bancoDeDados.getLocacao());
     }
 
 
     public static void main(String[] args) {
         String op;
-        System.out.println("Bem vindo a Uma Locadora Chamada Maciota!!!");
+        System.out.println("\nBem vindo a Uma Locadora Chamada Maciota!!!\n");
         while (true) {
             System.out.println("===== MENU PRINCIPAL =====");
             System.out.println("1 - Cliente");
@@ -340,149 +369,129 @@ public class Interface {
             switch (op) {
                 case "1":
                     while (op != "0") {
-                        System.out.println("===== MENU CLIENTE =====");
+                        System.out.println("\n====== MENU CLIENTE ======");
                         System.out.println("1 - Inserir");
                         System.out.println("2 - Alterar");
                         System.out.println("3 - Apagar");
                         System.out.println("4 - Buscar por ID");
                         System.out.println("5 - Visualizar todos");
                         System.out.println("0 - Voltar ao menu principal");
-                        System.out.println("==========================");
+                        System.out.println("============================");
                         System.out.print("Escolha uma opção: ");
 
                         op = scan.next();
+                        System.out.println("");
 
-                        switch (op) {
-                            case "0":
-                                break;
-                            case "1":
-                                adicionarCliente();
-                                break;
-                            case "2":
-                                alterarCliente();
-                                break;
-                            case "3":
-                                apagarCliente();
-                                break;
-                            case "4":
-                                buscarClientePorId();
-                                break;
-                            case "5":
-                                visualizarTodosClientes();
-                                break;
-                            default:
-                                System.out.println("Número inválido");
+                        if (op.equals("0")) {
+                            break;
+                        } else if (op.equals("1")) {
+                            adicionarCliente();
+                        } else if (op.equals("2")) {
+                            alterarCliente();
+                        } else if (op.equals("3")) {
+                            apagarCliente();
+                        } else if (op.equals("4")) {
+                            buscarClientePorId();
+                        } else if (op.equals("5")) {
+                            visualizarTodosClientes();
+                        } else {
+                            System.out.println("Número inválido");
                         }
                     }
                     break;
                 case "2":
                     while (op != "0") {
-                        System.out.println("===== MENU VEICULO =====");
+                        System.out.println("\n====== MENU VEICULO ======");
                         System.out.println("1 - Inserir");
                         System.out.println("2 - Alterar");
                         System.out.println("3 - Apagar");
                         System.out.println("4 - Buscar por ID");
                         System.out.println("5 - Visualizar todos");
                         System.out.println("0 - Voltar ao menu principal");
-                        System.out.println("==========================");
+                        System.out.println("============================");
                         System.out.print("Escolha uma opção: ");
 
                         op = scan.next();
+                        System.out.println("");
 
-                        switch (op) {
-                            case "0":
-                                break;
-                            case "1":
-                                adicionarVeiculo();
-                                break;
-                            case "2":
-                                alterarVeiculo();
-                                break;
-                            case "3":
-                                apagarVeiculo();
-                                break;
-                            case "4":
-                                buscarVeiculoPorId();
-                                break;
-                            case "5":
-                                visualizarTodosVeiculos();
-                                break;
-                            default:
-                                System.out.println("Número inválido");
+                        if (op.equals("0")) {
+                            break;
+                        } else if (op.equals("1")) {
+                            adicionarVeiculo();
+                        } else if (op.equals("2")) {
+                            alterarVeiculo();
+                        } else if (op.equals("3")) {
+                            apagarVeiculo();
+                        } else if (op.equals("4")) {
+                            buscarVeiculoPorId();
+                        } else if (op.equals("5")) {
+                            visualizarTodosVeiculos();
+                        } else {
+                            System.out.println("Número inválido");
                         }
                     }
                     break;
                 case "3":
                     while (op != "0") {
-                        System.out.println("===== MENU FUNCIONARIO =====");
+                        System.out.println("\n====== MENU FUNCIONARIO ======");
                         System.out.println("1 - Inserir");
                         System.out.println("2 - Alterar");
                         System.out.println("3 - Apagar");
                         System.out.println("4 - Buscar por ID");
                         System.out.println("5 - Visualizar todos");
                         System.out.println("0 - Voltar ao menu principal");
-                        System.out.println("==========================");
+                        System.out.println("============================");
                         System.out.print("Escolha uma opção: ");
 
                         op = scan.next();
+                        System.out.println("");
 
-                        switch (op) {
-                            case "0":
-                                break;
-                            case "1":
-                                adicionarFuncionario();
-                                break;
-                            case "2":
-                                alterarFuncionario();
-                                break;
-                            case "3":
-                                apagarFuncionario();
-                                break;
-                            case "4":
-                                buscarFuncionarioPorId();
-                                break;
-                            case "5":
-                                visualizarTodosFuncionarios();
-                                break;
-                            default:
-                                System.out.println("Número inválido");
+                        if (op.equals("0")) {
+                            break;
+                        } else if (op.equals("1")) {
+                            adicionarFuncionario();
+                        } else if (op.equals("2")) {
+                            alterarFuncionario();
+                        } else if (op.equals("3")) {
+                            apagarFuncionario();
+                        } else if (op.equals("4")) {
+                            buscarFuncionarioPorId();
+                        } else if (op.equals("5")) {
+                            visualizarTodosFuncionarios();
+                        } else {
+                            System.out.println("Número inválido");
                         }
                     }
                     break;
                 case "4":
                     while (op != "0") {
-                        System.out.println("===== MENU LOCACAO =====");
+                        System.out.println("\n====== MENU LOCACAO ======");
                         System.out.println("1 - Inserir");
                         System.out.println("2 - Alterar");
                         System.out.println("3 - Apagar");
                         System.out.println("4 - Buscar por ID");
                         System.out.println("5 - Visualizar todos");
                         System.out.println("0 - Voltar ao menu principal");
-                        System.out.println("==========================");
+                        System.out.println("============================");
                         System.out.print("Escolha uma opção: ");
 
                         op = scan.next();
+                        System.out.println("");
 
-                        switch (op) {
-                            case "0":
-                                break;
-                            case "1":
-                                adicionarLocacao();
-                                break;
-                            case "2":
-                                alterarLocacao();
-                                break;
-                            case "3":
-                                apagarLocacao();
-                                break;
-                            case "4":
-                                buscarLocacaoPorId();
-                                break;
-                            case "5":
-                                visualizarTodasLocacoes();
-                                break;
-                            default:
-                                System.out.println("Número inválido");
+                        if (op.equals("0")) {
+                            break;
+                        } else if (op.equals("1")) {
+                            adicionarLocacao();
+                        } else if (op.equals("2")) {
+                            alterarLocacao();
+                        } else if (op.equals("3")) {
+                            apagarLocacao();
+                        } else if (op.equals("4")) {
+                            buscarLocacaoPorId();
+                        } else if (op.equals("5")) {
+                            visualizarTodasLocacoes();
+                        } else {
+                            System.out.println("Número inválido");
                         }
                     }
                     break;

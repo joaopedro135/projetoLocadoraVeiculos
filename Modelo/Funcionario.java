@@ -27,6 +27,6 @@ public class Funcionario extends Entidade {
 
     @Override
     public String toString () {
-        return "Funcionario: " + this.nome + "\nComissao: " + this.comissaoAcumulada + "\n";
+        return String.format("Funcionario: %s\nComissao: R$%.2f\nId: %d\n", this.nome, this.comissaoAcumulada, this.getId());
     }
 }

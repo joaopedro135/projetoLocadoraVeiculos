@@ -36,7 +36,7 @@ public class Locacao extends Entidade {
         return this.cliente + "\n" + 
                this.aluguel.getVeiculo() + 
                "\nDias Alugados: " + this.aluguel.getDiasDeAluguel() + 
-               "\nValor total: " + this.aluguel.getValorTotal() + "\n\n" + 
-               this.funcionario.getNome() + "\n\n";
+               "\nValor total: R$" + this.aluguel.getValorTotal() + "\n\n" + 
+               "Funcionario: " + this.funcionario.getNome() + "\n\n";
     }
 }

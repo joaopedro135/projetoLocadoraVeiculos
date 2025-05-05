@@ -56,6 +56,6 @@ public class Veiculo extends Entidade {
     }
 
     public String toString () {
-        return "Carro: " + this.marca + " " + this.modelo + " " + this.ano + " " + this.cor + "\nValor diario: " + this.valorDiario + "\n";
+        return "Carro: " + this.marca + " " + this.modelo + " " + this.ano + " " + this.cor + "\nValor diario: R$" + this.valorDiario + "\n";
     }
 }
