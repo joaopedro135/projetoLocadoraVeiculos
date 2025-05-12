@@ -23,6 +23,10 @@ public class Interface {
             System.out.println("Id invalido");
             return;
         }
+        if (bancoDeDados.getClientes().procuraId(id) != null) {
+            System.out.println("Id já existe");
+            return;
+        }
         Cliente cliente = new Cliente(id, nome);
         bancoDeDados.getClientes().insercao(cliente);
     }
@@ -105,6 +109,10 @@ public class Interface {
             scan.nextLine();
         } catch (Exception e) {
             System.out.println("Digite um numero valido.");
+            return;
+        }
+        if (bancoDeDados.getVeiculos().procuraId(id) != null) {
+            System.out.println("Id já existe");
             return;
         }
         Veiculo veiculo = new Veiculo(marca, modelo, ano, cor, valorDiario, id);
@@ -191,6 +199,10 @@ public class Interface {
             scan.nextLine();
         } catch (Exception e) {
             System.out.println("Id invalido");
+            return;
+        }
+        if (bancoDeDados.getFuncionarios().procuraId(id) != null) {
+            System.out.println("Id já existe");
             return;
         }
         Funcionario Funcionario = new Funcionario(nome, id);
@@ -282,6 +294,10 @@ public class Interface {
         funcionario = (Funcionario)bancoDeDados.getFuncionarios().procuraId(idFuncionario);
         veiculo = (Veiculo)bancoDeDados.getVeiculos().procuraId(idVeiculo);
         funcionario.addComissao(diasAlugados * veiculo.getValorDiario());
+        if (bancoDeDados.getLocacao().procuraId(id) != null) {
+            System.out.println("Id já existe");
+            return;
+        }
         Locacao locacao = new Locacao(id, cliente, veiculo, funcionario, diasAlugados);
         bancoDeDados.getLocacao().insercao(locacao);
     }
@@ -353,7 +369,7 @@ public class Interface {
 
     public static void main(String[] args) {
         String op;
-        System.out.println("\nBem vindo a Uma Locadora Chamada Maciota!!!\n");
+        System.out.println("\nBem vindo a Locadora Torres!!!\n");
         while (true) {
             System.out.println("===== MENU PRINCIPAL =====");
             System.out.println("1 - Cliente");

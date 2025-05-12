@@ -50,6 +50,7 @@ public class Persistente {
         return null;
     }
 
+    @Override
     public String toString () {
         String retornoTotal = "";
         for (Entidade i : array) {
