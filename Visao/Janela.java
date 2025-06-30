@@ -1,10 +1,15 @@
 package Visao;
 
 import java.awt.*;
+import java.util.ArrayList;
+
 import javax.swing.*;
+
+import Modelo.Aluguel;
 import Modelo.Cliente;
 import Modelo.Veiculo;
 import Persistencia.BancoDeDados;
+import Persistencia.IdNotFoundException;
 
 public class Janela extends JFrame {
 
@@ -16,7 +21,7 @@ public class Janela extends JFrame {
 
         this.bancoDeDados = bancoDeDados;
         setTitle("Uma Locadora Chamada Torres");
-        setSize(600, 400); //tamanho
+        setSize(700, 450); //tamanho
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // SE FECHA JANELA ENTÃO PROGRAMA ENCERRA
         setLocationRelativeTo(null);
 
@@ -304,7 +309,7 @@ public class Janela extends JFrame {
             }
             try {
                 Cliente cliente = new Cliente(id, nome);
-                bancoDeDados.getClientes().alteracao(cliente, id);
+                bancoDeDados.getClientes().alteracao(cliente);
                 JOptionPane.showMessageDialog(this, "Cliente alterado com sucesso!");
                 txtNome.setText("");
                 txtId.setText("");
@@ -599,6 +604,242 @@ public class Janela extends JFrame {
         return panel;
     }
 
+    private JPanel criarAlterarVeiculoPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(60, 100, 60, 100));
+
+        JLabel title = new JLabel("Alterar Veículo", SwingConstants.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 22));
+        panel.add(title, BorderLayout.NORTH);
+
+        JPanel formPanel = new JPanel(new GridLayout(4, 2, 10, 10));
+        JLabel lblMarca = new JLabel("Marca do veículo:");
+        JTextField txtMarca = new JTextField();
+        JLabel lblModelo = new JLabel("Modelo do veículo:");
+        JTextField txtModelo = new JTextField();
+        JLabel lblCor = new JLabel("Cor do veículo:");
+        JTextField txtCor = new JTextField();
+        JLabel lblAno = new JLabel("Ano do veículo:");
+        JTextField txtAno = new JTextField();
+        JLabel lblValorDiario = new JLabel("Valor da diária:");
+        JTextField txtValorDiario = new JTextField();
+        JLabel lblId = new JLabel("ID do veículo:");
+        JTextField txtId = new JTextField();
+
+        formPanel.add(lblMarca);
+        formPanel.add(txtMarca);
+        formPanel.add(lblModelo);
+        formPanel.add(txtModelo);
+        formPanel.add(lblCor);
+        formPanel.add(txtCor);
+        formPanel.add(lblAno);
+        formPanel.add(txtAno);
+        formPanel.add(lblValorDiario);
+        formPanel.add(txtValorDiario);
+        formPanel.add(lblId);
+        formPanel.add(txtId);
+
+        JButton btnConfirmar = new JButton("Confirmar");
+        JButton btnVoltar = new JButton("Voltar");
+
+        formPanel.add(btnConfirmar);
+        formPanel.add(btnVoltar);
+
+        panel.add(formPanel, BorderLayout.CENTER);
+
+        // EVENTO EM BOTÃO VOLTAR ---> IR PARA PAINEL VEÍCULO
+        btnVoltar.addActionListener(e -> cardLayout.show(mainPanel, "veiculo"));
+
+        btnConfirmar.addActionListener(e -> {
+            String marca = txtMarca.getText().trim();
+            String modelo = txtModelo.getText().trim();
+            String cor = txtCor.getText().trim();
+            String anoStr = txtAno.getText().trim();
+            String valorDiarioStr = txtValorDiario.getText().trim();
+            String idStr = txtId.getText().trim();
+
+            if (marca.isEmpty() || modelo.isEmpty() || cor.isEmpty() ||
+                anoStr.isEmpty() || valorDiarioStr.isEmpty() || idStr.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            int ano, id;
+            double valorDiario;
+            try {
+                ano = Integer.parseInt(anoStr);
+                valorDiario = Double.parseDouble(valorDiarioStr);
+                id = Integer.parseInt(idStr);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Ano, valor da diária ou ID inválido.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            try {
+                Veiculo veiculo = new Veiculo(marca, modelo, ano, cor, valorDiario, id);
+                bancoDeDados.getVeiculos().alteracao(veiculo);
+            } catch (IdNotFoundException ex){
+                JOptionPane.showMessageDialog(this, "ID não existe.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            
+            JOptionPane.showMessageDialog(this, "Veículo alterado com sucesso!");
+            txtMarca.setText("");
+            txtModelo.setText("");
+            txtCor.setText("");
+            txtAno.setText("");
+            txtValorDiario.setText("");
+            txtId.setText("");
+        });
+        return panel;
+    }
+
+    private JPanel criarApagarVeiculoPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(60, 100, 60, 100));
+
+        JLabel title = new JLabel("Apagar Veiculo", SwingConstants.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 22));
+        panel.add(title, BorderLayout.NORTH);
+
+        JPanel formPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+        JLabel lblId = new JLabel("ID do Veiculo:");
+        JTextField txtId = new JTextField();
+
+        formPanel.add(lblId);
+        formPanel.add(txtId);
+
+        JButton btnConfirmar = new JButton("Confirmar");
+        JButton btnVoltar = new JButton("Voltar");
+
+        formPanel.add(btnConfirmar);
+        formPanel.add(btnVoltar);
+
+        panel.add(formPanel, BorderLayout.CENTER);
+
+        // EVENTO EM BOTÃO VOLTAR ---> IR PARA PAINEL Veiculo
+        btnVoltar.addActionListener(e -> cardLayout.show(mainPanel, "veiculo"));
+
+        btnConfirmar.addActionListener(e -> {
+            System.out.println("Cliquei em Confirmar (apagar)");
+            String idStr = txtId.getText().trim();
+            if (idStr.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Preencha o campo de Id.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int id;
+            try {
+                id = Integer.parseInt(idStr);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Id inválido.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (bancoDeDados.getVeiculos().procuraId(id) == null) {
+                JOptionPane.showMessageDialog(this, "Id não existe.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            try {
+                bancoDeDados.getVeiculos().remover(id);
+                JOptionPane.showMessageDialog(this, "Veiculo apagado com sucesso!");
+                txtId.setText("");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Erro ao apagar veiculo: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+        return panel;
+    }
+
+    private JPanel criarBuscarVeiculoPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(60, 100, 60, 100));
+
+        JLabel title = new JLabel("Buscar veiculo por ID", SwingConstants.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 22));
+        panel.add(title, BorderLayout.NORTH);
+
+        JPanel formPanel = new JPanel(new GridLayout(2, 2, 10, 10));
+        JLabel lblId = new JLabel("ID do Veiculo:");
+        JTextField txtId = new JTextField();
+
+        formPanel.add(lblId);
+        formPanel.add(txtId);
+
+        JButton btnBuscar = new JButton("Buscar");
+        JButton btnVoltar = new JButton("Voltar");
+
+        formPanel.add(btnBuscar);
+        formPanel.add(btnVoltar);
+
+        panel.add(formPanel, BorderLayout.CENTER);
+
+        // CAMPO PARA MOSTRAR RESULTADO DA BUSCA
+        JTextArea resultado = new JTextArea(5,30);
+        resultado.setEditable(false);
+        resultado.setLineWrap(true);
+        resultado.setWrapStyleWord(true);
+        panel.add(new JScrollPane(resultado), BorderLayout.SOUTH);
+
+        // EVENTO EM BOTÃO VOLTAR ---> IR PARA PAINEL VEICULO
+        btnVoltar.addActionListener(e -> cardLayout.show(mainPanel, "veiculo"));
+
+        btnBuscar.addActionListener(e -> {
+            String idStr = txtId.getText().trim();
+            if (idStr.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Preencha o campo ID.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int id;
+            try {
+                id = Integer.parseInt(idStr);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "ID inválido.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            Veiculo veiculo = bancoDeDados.getVeiculos().procuraId(id);
+            if (veiculo == null) {
+                resultado.setText("Veiculo não encontrado.");
+            } else {
+                resultado.setText(veiculo.toString());
+            }
+        });
+
+        return panel;
+    }
+
+    private JPanel criarVisualizarTodosVeiculosPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(40, 60, 40, 60));
+
+        JLabel title = new JLabel("Todos os Veiculos", SwingConstants.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 22));
+        panel.add(title, BorderLayout.NORTH);
+
+        JTextArea areaVeiculos = new JTextArea();
+        areaVeiculos.setEditable(false);
+        areaVeiculos.setLineWrap(true);
+        areaVeiculos.setWrapStyleWord(true);
+
+        JScrollPane scroll = new JScrollPane(areaVeiculos);
+        panel.add(scroll, BorderLayout.CENTER);
+
+        JButton btnVoltar = new JButton("Voltar");
+        JPanel btnPanel = new JPanel();
+        btnPanel.add(btnVoltar);
+        panel.add(btnPanel, BorderLayout.SOUTH);
+
+        panel.addHierarchyListener(e -> {
+            if ((e.getChangeFlags() & java.awt.event.HierarchyEvent.SHOWING_CHANGED) != 0 && panel.isShowing()) {
+                areaVeiculos.setText(bancoDeDados.getVeiculos().toString());
+            }
+        });
+
+        // EVENTO EM BOTÃO VOLTAR ---> IR PARA PAINEL VEICULO
+        btnVoltar.addActionListener(e -> cardLayout.show(mainPanel, "veiculo"));
+
+        return panel;
+    }
+
     private JPanel criarFuncionarioPanel() {
 
         // INICIALIZAÇÃO PRINCIPAL
@@ -761,7 +1002,7 @@ public class Janela extends JFrame {
             }
             try {
                 Cliente cliente = new Cliente(id, nome);
-                bancoDeDados.getClientes().alteracao(cliente, id);
+                bancoDeDados.getClientes().alteracao(cliente);
                 JOptionPane.showMessageDialog(this, "Funcionário alterado com sucesso!");
                 txtNome.setText("");
                 txtId.setText("");
@@ -951,6 +1192,101 @@ public class Janela extends JFrame {
 
         return locacaoPanel;
     }
+
+    private JPanel criarAdicionarLocacaoPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(60, 100, 60, 100));
+
+        JLabel title = new JLabel("Adicionar Locação", SwingConstants.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 22));
+        panel.add(title, BorderLayout.NORTH);
+
+        JPanel formPanel = new JPanel(new GridLayout(4, 4, 10, 10));
+        JLabel lblIdFun = new JLabel("ID do funcionario:");
+        JTextField txtIdFun = new JTextField();
+        JLabel lblIdCliente = new JLabel("ID do cliente:");
+        JTextField txtIdCliente = new JTextField();
+        JLabel lblIdVeiculo = new JLabel("ID do veiculo:");
+        JTextField txtIdVeiculo = new JTextField();
+        JLabel lblDiasAlugados = new JLabel("Dias alugados:");
+        JTextField txtDiasAlugados = new JTextField();
+
+
+        formPanel.add(lblIdCliente);
+        formPanel.add(txtIdCliente);
+        formPanel.add(lblIdFun);
+        formPanel.add(txtIdFun);
+        formPanel.add(lblIdVeiculo);
+        formPanel.add(txtIdVeiculo);
+        formPanel.add(lblDiasAlugados);
+        formPanel.add(txtDiasAlugados);
+
+        JButton btnConfirmar = new JButton("Confirmar");
+        JButton btnVoltar = new JButton("Voltar");
+        JButton btnAddAluguel = new JButton("Adicionar Aluguel");
+
+        formPanel.add(btnConfirmar);
+        formPanel.add(btnVoltar);
+        formPanel.add(btnAddAluguel);
+
+        panel.add(formPanel, BorderLayout.CENTER);
+
+        ArrayList<Aluguel> listaAluguel = new ArrayList<Aluguel>();
+
+        // EVENTO EM BOTÃO VOLTAR ---> IR PARA PAINEL CLIENTE
+        btnVoltar.addActionListener(e -> cardLayout.show(mainPanel, "locacao"));
+
+        //EVENTO EM BOTAO ADICIONAR ALUGUEL ---> ADICIONAR O ALUGUEL A LISTA DE ALUGUEIS
+        btnAddAluguel.addActionListener(e -> {
+            String idVeiculo = txtIdVeiculo.getText().trim();
+            String diasAlugados = txtDiasAlugados.getText().trim();
+            if(idVeiculo.isEmpty() || diasAlugados.isEmpty()){
+                JOptionPane.showMessageDialog(this, "Preencha os campos id do veiculo e dias alugados.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int idV,dias, id = 1;
+            try{
+                idV = Integer.parseInt(idVeiculo);
+                dias = Integer.parseInt(diasAlugados);
+            }catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Id ou numero de dias invalido", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            
+            listaAluguel.add(new Aluguel(id++, bancoDeDados.getVeiculos().procuraId(idV), dias));
+            JOptionPane.showMessageDialog(this, "Aluguel adicionado à locação com sucesso!");
+            txtIdVeiculo.setText("");
+            txtDiasAlugados.setText("");
+        });
+
+        // EVENTO EM BOTÃO CONFIRMAR ---> FINALIZAR A AÇÃO
+        btnConfirmar.addActionListener(e -> {
+            String idCliente = txtIdCliente.getText().trim();
+            String idFun = txtIdFun.getText().trim();
+            if (idCliente.isEmpty() || idFun.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Preencha todos os campos.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int id;
+            try {
+                id = Integer.parseInt(idFun);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "ID inválido.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            if (bancoDeDados.getClientes().procuraId(id) != null) {
+                JOptionPane.showMessageDialog(this, "ID já existe.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            Cliente cliente = new Cliente(id, idCliente);
+            bancoDeDados.getClientes().insercao(cliente);
+            JOptionPane.showMessageDialog(this, "Cliente adicionado com sucesso!");
+            txtNome.setText("");
+            txtId.setText("");
+        });
+        return panel;
+    }    
 
     public static void main(String[] args) {
         BancoDeDados banco = new BancoDeDados();

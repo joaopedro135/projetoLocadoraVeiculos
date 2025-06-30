@@ -17,14 +17,14 @@ public class Persistente <T extends Entidade> {
         array.add(entidade);
     }
 
-    public void alteracao (T entidade, int id) throws IdNotFoundException {
+    public void alteracao (T entidade) throws IdNotFoundException {
         for (int i = 0; i < array.size(); i++) {
-            if (array.get(i).getId() == id) {
+            if (array.get(i).getId() == entidade.getId()) {
                 array.set(i, entidade);
                 return;
             }
         }
-        throw new IdNotFoundException(id);
+        throw new IdNotFoundException(entidade.getId());
     }
 
     public void remover (int id) {
