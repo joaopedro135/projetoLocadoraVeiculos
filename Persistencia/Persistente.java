@@ -6,25 +6,25 @@ import Modelo.Entidade;
 
 //Lista de objetos genérica para qualquer entidade
 
-public class Persistente {
-    ArrayList<Entidade> array;
+public class Persistente <T extends Entidade> {
+    ArrayList<T> array;
 
     public Persistente () {
-        array = new ArrayList<Entidade>();
+        array = new ArrayList<T>();
     }
 
-    public void insercao (Entidade entidade) {
+    public void insercao (T entidade) {
         array.add(entidade);
     }
 
-    public void alteracao (Entidade entidade, int id) {
+    public void alteracao (T entidade, int id) throws IdNotFoundException {
         for (int i = 0; i < array.size(); i++) {
             if (array.get(i).getId() == id) {
                 array.set(i, entidade);
                 return;
             }
         }
-        System.out.println("ID não encontrado");
+        throw new IdNotFoundException(id);
     }
 
     public void remover (int id) {
@@ -37,12 +37,12 @@ public class Persistente {
         System.out.println("ID não encontrado");
     }
 
-    public ArrayList<Entidade> getArray () {
+    public ArrayList<T> getArray () {
         return array;
     }
 
-    public Entidade procuraId (int id) {
-        for (Entidade i : array) {
+    public T procuraId (int id) {
+        for (T i : array) {
             if (i.getId() == id) {
                 return i;
             }
@@ -53,7 +53,7 @@ public class Persistente {
     @Override
     public String toString () {
         String retornoTotal = "";
-        for (Entidade i : array) {
+        for (T i : array) {
             retornoTotal += i + "\n";
         }
         return retornoTotal;

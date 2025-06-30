@@ -1,31 +1,36 @@
 package Persistencia;
 
+import Modelo.Cliente;
+import Modelo.Funcionario;
+import Modelo.Locacao;
+import Modelo.Veiculo;
+
 public class BancoDeDados {
-    private Persistente listaVeiculos;
-    private Persistente listaFuncionarios;
-    private Persistente listaClientes;
-    private Persistente listaLocacao;
+    private Persistente<Veiculo> listaVeiculos;
+    private Persistente<Funcionario> listaFuncionarios;
+    private Persistente<Cliente> listaClientes;
+    private Persistente<Locacao> listaLocacao;
 
     public BancoDeDados () {
-        listaVeiculos = new Persistente();
-        listaFuncionarios = new Persistente();
-        listaClientes = new Persistente();
-        listaLocacao = new Persistente();
+        listaVeiculos = new Persistente<Veiculo>();
+        listaFuncionarios = new Persistente<Funcionario>();
+        listaClientes = new Persistente<Cliente>();
+        listaLocacao = new Persistente<Locacao>();
     }
 
-    public Persistente getVeiculos () {
+    public Persistente<Veiculo> getVeiculos () {
         return listaVeiculos;
     }
 
-    public Persistente getFuncionarios () {
+    public Persistente<Funcionario> getFuncionarios () {
         return listaFuncionarios;
     }
 
-    public Persistente getClientes () {
+    public Persistente<Cliente> getClientes () {
         return listaClientes;
     }
 
-    public Persistente getLocacao () {
+    public Persistente<Locacao> getLocacao () {
         return listaLocacao;
     }
 }
