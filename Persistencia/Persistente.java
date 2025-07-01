@@ -27,27 +27,27 @@ public class Persistente <T extends Entidade> {
         throw new IdNotFoundException(entidade.getId());
     }
 
-    public void remover (int id) {
+    public void remover (int id) throws IdNotFoundException {
         for (int i = 0; i < array.size(); i++) {
             if (array.get(i).getId() == id) {
                 array.remove(i);
                 return;
             }
         }
-        System.out.println("ID não encontrado");
+        throw new IdNotFoundException(id);
     }
 
     public ArrayList<T> getArray () {
         return array;
     }
 
-    public T procuraId (int id) {
+    public T procuraId (int id) throws IdNotFoundException {
         for (T i : array) {
             if (i.getId() == id) {
                 return i;
             }
         }
-        return null;
+        throw new IdNotFoundException(id);
     }
 
     @Override

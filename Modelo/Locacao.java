@@ -5,14 +5,14 @@ import java.util.List;
 
 public class Locacao extends Entidade {
     private Cliente cliente;
-    private ArrayList<Aluguel> alugueis;
     private Funcionario funcionario;
+    private ArrayList<Aluguel> alugueis;
 
-    public Locacao (int id, Cliente cliente, Veiculo veiculo, Funcionario funcionario, int diasAlugados) {
+    public Locacao (int id, Cliente cliente, Funcionario funcionario, ArrayList<Aluguel> listaAluguel) {
         super (id);
-        this.alugueis = new ArrayList<>();
         this.cliente = cliente;
         this.funcionario = funcionario;
+        this.alugueis = listaAluguel;
     }
 
     public Cliente getCliente () {
