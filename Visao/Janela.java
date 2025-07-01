@@ -105,7 +105,7 @@ public class Janela extends JFrame {
         JPanel adicionarLocacaoPanel = criarAdicionarLocacaoPanel();
         mainPanel.add(adicionarLocacaoPanel, "adicionarLocacao");
 
-        /*JPanel alterarLocacaoPanel = criarAlterarLocacaoPanel();
+        JPanel alterarLocacaoPanel = criarAlterarLocacaoPanel();
         mainPanel.add(alterarLocacaoPanel, "alterarLocacao");
 
         JPanel apagarLocacaoPanel = criarApagarLocacaoPanel();
@@ -114,8 +114,8 @@ public class Janela extends JFrame {
         JPanel buscarLocacaoPanel = criarBuscarLocacaoPanel();
         mainPanel.add(buscarLocacaoPanel, "buscarLocacao");
 
-        JPanel visualizarTodosLocacaosPanel = criarVisualizarTodosLocacaosPanel();
-        mainPanel.add(visualizarTodosLocacaosPanel, "visualizarTodosLocacaos");*/
+        JPanel visualizarTodosLocacaosPanel = criarVisualizarTodosLocacoesPanel();
+        mainPanel.add(visualizarTodosLocacaosPanel, "visualizarTodosLocacaos");
 
         add(mainPanel);
         setVisible(true);
@@ -263,15 +263,16 @@ public class Janela extends JFrame {
                 return;
             }
 
-            if (bancoDeDados.getClientes().procuraId(id) != null) {
+            try {
+                bancoDeDados.getClientes().procuraId(id);
                 JOptionPane.showMessageDialog(this, "ID já existe.", "Erro", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            Cliente cliente = new Cliente(id, nome);
-            bancoDeDados.getClientes().insercao(cliente);
-            JOptionPane.showMessageDialog(this, "Cliente adicionado com sucesso!");
-            txtNome.setText("");
-            txtId.setText("");
+            } catch (IdNotFoundException ex){
+                Cliente cliente = new Cliente(id, nome);
+                bancoDeDados.getClientes().insercao(cliente);
+                JOptionPane.showMessageDialog(this, "Cliente adicionado com sucesso!");
+                txtNome.setText("");
+                txtId.setText("");
+            } 
         });
         return panel;
     }
@@ -321,8 +322,9 @@ public class Janela extends JFrame {
                 JOptionPane.showMessageDialog(this, "ID inválido.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            // Supondo que bancoDeDados e Cliente estejam acessíveis aqui
-            if (bancoDeDados.getClientes().procuraId(id) == null) {
+            try {
+                bancoDeDados.getClientes().procuraId(id);
+            } catch (IdNotFoundException ex) {
                 JOptionPane.showMessageDialog(this, "ID não existe.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
             }
@@ -375,12 +377,12 @@ public class Janela extends JFrame {
             int id;
             try {
                 id = Integer.parseInt(idStr);
+                bancoDeDados.getClientes().procuraId(id);
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "Id inválido.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
-            }
-            if (bancoDeDados.getClientes().procuraId(id) == null) {
-                JOptionPane.showMessageDialog(this, "Id não existe.", "Erro", JOptionPane.ERROR_MESSAGE);
+            } catch (IdNotFoundException ex) {
+                JOptionPane.showMessageDialog(this, "ID não existe.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             try {
@@ -434,17 +436,18 @@ public class Janela extends JFrame {
                 return;
             }
             int id;
+            Cliente cliente;
             try {
                 id = Integer.parseInt(idStr);
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "ID inválido.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            Cliente cliente = bancoDeDados.getClientes().procuraId(id);
-            if (cliente == null) {
-                resultado.setText("Cliente não encontrado.");
-            } else {
+            try {
+                cliente = bancoDeDados.getClientes().procuraId(id);
                 resultado.setText(cliente.toString());
+            } catch (IdNotFoundException ex) {
+                resultado.setText("Cliente não encontrado.");
             }
         });
 
@@ -604,12 +607,13 @@ public class Janela extends JFrame {
                 JOptionPane.showMessageDialog(this, "Ano, valor da diária ou ID inválido.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-
-            if (bancoDeDados.getVeiculos().procuraId(id) != null) {
+            try {
+                bancoDeDados.getVeiculos().procuraId(id);
                 JOptionPane.showMessageDialog(this, "ID já existe.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
+            } catch (IdNotFoundException ex) {
+                
             }
-
             Veiculo veiculo = new Veiculo(marca, modelo, ano, cor, valorDiario, id);
             bancoDeDados.getVeiculos().insercao(veiculo);
             JOptionPane.showMessageDialog(this, "Veículo adicionado com sucesso!");
@@ -754,8 +758,10 @@ public class Janela extends JFrame {
                 JOptionPane.showMessageDialog(this, "Id inválido.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            if (bancoDeDados.getVeiculos().procuraId(id) == null) {
-                JOptionPane.showMessageDialog(this, "Id não existe.", "Erro", JOptionPane.ERROR_MESSAGE);
+            try {
+                bancoDeDados.getVeiculos().procuraId(id);
+            } catch (IdNotFoundException ex) {
+                JOptionPane.showMessageDialog(this, "ID não existe.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             try {
@@ -809,18 +815,21 @@ public class Janela extends JFrame {
                 return;
             }
             int id;
+            Veiculo veiculo;
             try {
                 id = Integer.parseInt(idStr);
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "ID inválido.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            Veiculo veiculo = bancoDeDados.getVeiculos().procuraId(id);
-            if (veiculo == null) {
+            try {
+                veiculo = bancoDeDados.getVeiculos().procuraId(id);
+            } catch (IdNotFoundException ex) {
                 resultado.setText("Veiculo não encontrado.");
-            } else {
-                resultado.setText(veiculo.toString());
+                return;
             }
+            resultado.setText(veiculo.toString());
+
         });
 
         return panel;
@@ -956,15 +965,17 @@ public class Janela extends JFrame {
                 return;
             }
 
-            if (bancoDeDados.getFuncionarios().procuraId(id) != null) {
+            try {
+                bancoDeDados.getFuncionarios().procuraId(id);
                 JOptionPane.showMessageDialog(this, "ID já existe.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
+            } catch (IdNotFoundException ex) {
+                Funcionario funcionario = new Funcionario(nome, id);
+                bancoDeDados.getFuncionarios().insercao(funcionario);
+                JOptionPane.showMessageDialog(this, "Funcionário adicionado com sucesso!");
+                txtNome.setText("");
+                txtId.setText("");
             }
-            Funcionario funcionario = new Funcionario(nome, id);
-            bancoDeDados.getFuncionarios().insercao(funcionario);
-            JOptionPane.showMessageDialog(this, "Funcionário adicionado com sucesso!");
-            txtNome.setText("");
-            txtId.setText("");
         });
         return panel;
     }
@@ -1301,6 +1312,12 @@ public class Janela extends JFrame {
                 JOptionPane.showMessageDialog(this, "Veículo não encontrado.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
             }
+            for (Aluguel aluguel : listaAluguel) {
+                if (aluguel.getVeiculo().getId() == idV) {
+                    JOptionPane.showMessageDialog(this, "Veículo já adicionado à locação.", "Erro", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            }
             listaAluguel.add(new Aluguel(id++, veiculo, dias));
             JOptionPane.showMessageDialog(this, "Aluguel adicionado à locação com sucesso!");
             txtIdVeiculo.setText("");
@@ -1352,6 +1369,7 @@ public class Janela extends JFrame {
             txtIdLoc.setText("");
             txtIdCliente.setText("");
             txtIdFun.setText("");
+            listaAluguel.clear();
         });
         return panel;
     }
@@ -1423,10 +1441,18 @@ public class Janela extends JFrame {
                 JOptionPane.showMessageDialog(this, "Id ou numero de dias invalido", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            Veiculo veiculo = bancoDeDados.getVeiculos().procuraId(idV);
-            if (veiculo == null) {
+            Veiculo veiculo;
+            try {
+                veiculo = bancoDeDados.getVeiculos().procuraId(idV);
+            } catch (IdNotFoundException ex) {
                 JOptionPane.showMessageDialog(this, "Veículo não encontrado.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
+            }
+            for (Aluguel aluguel : listaAluguel) {
+                if (aluguel.getVeiculo().getId() == idV) {
+                    JOptionPane.showMessageDialog(this, "Veículo já adicionado à locação.", "Erro", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
             }
             listaAluguel.add(new Aluguel(id++, veiculo, dias));
             JOptionPane.showMessageDialog(this, "Aluguel adicionado à locação com sucesso!");
@@ -1448,6 +1474,8 @@ public class Janela extends JFrame {
                 return;
             }
             int idC, idF, idL;
+            Cliente cliente;
+            Funcionario funcionario;
             try {
                 idC = Integer.parseInt(idCliente);
                 idF = Integer.parseInt(idFun);
@@ -1457,23 +1485,26 @@ public class Janela extends JFrame {
                 return;
             }
 
-            if (bancoDeDados.getLocacao().procuraId(idL) != null) {
-                JOptionPane.showMessageDialog(this, "ID já existe.", "Erro", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            Cliente cliente = bancoDeDados.getClientes().procuraId(idC);
-            if (cliente == null) {
+            try {
+                cliente = bancoDeDados.getClientes().procuraId(idC);
+            } catch (IdNotFoundException ex) {
                 JOptionPane.showMessageDialog(this, "ID do cliente não existe.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            Funcionario funcionario = bancoDeDados.getFuncionarios().procuraId(idF);
-            if (funcionario == null) {
+            try {
+                funcionario = bancoDeDados.getFuncionarios().procuraId(idF);
+            } catch (IdNotFoundException ex) {
                 JOptionPane.showMessageDialog(this, "ID do funcionário não existe.", "Erro", JOptionPane.ERROR_MESSAGE);
                 return;
             }
             Locacao locacao = new Locacao(idL, cliente, funcionario, listaAluguel);
-            bancoDeDados.getLocacao().insercao(locacao);
-            JOptionPane.showMessageDialog(this, "Locação adicionada com sucesso!");
+            try {
+                bancoDeDados.getLocacao().alteracao(locacao); 
+            } catch (IdNotFoundException ex) {
+                JOptionPane.showMessageDialog(this, "Locação não existe", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            JOptionPane.showMessageDialog(this, "Locação alterada com sucesso!");
             txtIdLoc.setText("");
             txtIdCliente.setText("");
             txtIdFun.setText("");
@@ -1481,6 +1512,151 @@ public class Janela extends JFrame {
         return panel;
     }
 
+    private JPanel criarApagarLocacaoPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(60, 100, 60, 100));
+
+        JLabel title = new JLabel("Apagar Locação", SwingConstants.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 22));
+        panel.add(title, BorderLayout.NORTH);
+
+        JPanel formPanel = new JPanel(new GridLayout(3, 2, 10, 10));
+        JLabel lblId = new JLabel("ID da Locação:");
+        JTextField txtId = new JTextField();
+
+        formPanel.add(lblId);
+        formPanel.add(txtId);
+
+        JButton btnConfirmar = new JButton("Confirmar");
+        JButton btnVoltar = new JButton("Voltar");
+
+        formPanel.add(btnConfirmar);
+        formPanel.add(btnVoltar);
+
+        panel.add(formPanel, BorderLayout.CENTER);
+
+        // EVENTO EM BOTÃO VOLTAR ---> IR PARA PAINEL FUNCIONÁRIO
+        btnVoltar.addActionListener(e -> cardLayout.show(mainPanel, "locacao"));
+
+        btnConfirmar.addActionListener(e -> {
+            System.out.println("Cliquei em Confirmar (apagar)");
+            String idStr = txtId.getText().trim();
+            if (idStr.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Preencha o campo de Id.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int id;
+            try {
+                id = Integer.parseInt(idStr);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Id inválido.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            try {
+                bancoDeDados.getLocacao().remover(id);
+                JOptionPane.showMessageDialog(this, "Locação apagada com sucesso!");
+                txtId.setText("");
+            } catch (IdNotFoundException ex) {
+                JOptionPane.showMessageDialog(this, "ID não existe.", "Erro", JOptionPane.ERROR_MESSAGE);
+            }
+            catch (Exception ex) {
+                JOptionPane.showMessageDialog(this, "Erro ao apagar locação: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+        return panel;
+    }
+
+    private JPanel criarBuscarLocacaoPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(60, 100, 60, 100));
+
+        JLabel title = new JLabel("Buscar Locação por ID", SwingConstants.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 22));
+        panel.add(title, BorderLayout.NORTH);
+
+        JPanel formPanel = new JPanel(new GridLayout(2, 2, 10, 10));
+        JLabel lblId = new JLabel("ID da locação:");
+        JTextField txtId = new JTextField();
+
+        formPanel.add(lblId);
+        formPanel.add(txtId);
+
+        JButton btnBuscar = new JButton("Buscar");
+        JButton btnVoltar = new JButton("Voltar");
+
+        formPanel.add(btnBuscar);
+        formPanel.add(btnVoltar);
+
+        panel.add(formPanel, BorderLayout.CENTER);
+
+        // CAMPO PARA MOSTRAR RESULTADO DA BUSCA
+        JTextArea resultado = new JTextArea(5,30);
+        resultado.setEditable(false);
+        resultado.setLineWrap(true);
+        resultado.setWrapStyleWord(true);
+        panel.add(new JScrollPane(resultado), BorderLayout.SOUTH);
+
+        // EVENTO EM BOTÃO VOLTAR ---> IR PARA PAINEL CLIENTE
+        btnVoltar.addActionListener(e -> cardLayout.show(mainPanel, "locacao"));
+
+        btnBuscar.addActionListener(e -> {
+            String idStr = txtId.getText().trim();
+            if (idStr.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Preencha o campo ID.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            int id;
+            Locacao locacao;
+            try {
+                id = Integer.parseInt(idStr);
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "ID inválido.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            try {
+                locacao = bancoDeDados.getLocacao().procuraId(id);
+            } catch (IdNotFoundException ex) {
+                resultado.setText("Funcionário não encontrado.");
+                return;
+            }
+            resultado.setText(locacao.toString());
+        });
+
+        return panel;
+    }
+
+    private JPanel criarVisualizarTodosLocacoesPanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(40, 60, 40, 60));
+
+        JLabel title = new JLabel("Todas as locações", SwingConstants.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 22));
+        panel.add(title, BorderLayout.NORTH);
+
+        JTextArea areaLocacoes = new JTextArea();
+        areaLocacoes.setEditable(false);
+        areaLocacoes.setLineWrap(true);
+        areaLocacoes.setWrapStyleWord(true);
+
+        JScrollPane scroll = new JScrollPane(areaLocacoes);
+        panel.add(scroll, BorderLayout.CENTER);
+
+        JButton btnVoltar = new JButton("Voltar");
+        JPanel btnPanel = new JPanel();
+        btnPanel.add(btnVoltar);
+        panel.add(btnPanel, BorderLayout.SOUTH);
+
+        panel.addHierarchyListener(e -> {
+            if ((e.getChangeFlags() & java.awt.event.HierarchyEvent.SHOWING_CHANGED) != 0 && panel.isShowing()) {
+                areaLocacoes.setText(bancoDeDados.getLocacao().toString());
+            }
+        });
+
+        // EVENTO EM BOTÃO VOLTAR ---> IR PARA PAINEL CLIENTE
+        btnVoltar.addActionListener(e -> cardLayout.show(mainPanel, "locacao"));
+
+        return panel;
+    }
 
     public static void main(String[] args) {
         BancoDeDados banco = new BancoDeDados();

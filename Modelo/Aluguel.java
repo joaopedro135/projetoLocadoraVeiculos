@@ -27,8 +27,8 @@ public class Aluguel extends Entidade {
     @Override
     public String toString() {
         return this.getVeiculo() + 
-        "\nDias Alugados: " + this.getDiasDeAluguel() + 
-        "\nValor total: R$" + this.getValorTotal(); 
+        "Dias Alugados: " + this.getDiasDeAluguel() + 
+        "\nValor total: R$" + this.getValorTotal() + "\n"; 
     }
     //sem sets pois na ideia de um aluguel não é necessario alterar algum valor do aluguel, mas sim criar outro para sobrepor ao antigo
 }

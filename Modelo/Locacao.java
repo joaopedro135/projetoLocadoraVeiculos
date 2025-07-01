@@ -12,7 +12,9 @@ public class Locacao extends Entidade {
         super (id);
         this.cliente = cliente;
         this.funcionario = funcionario;
-        this.alugueis = listaAluguel;
+        this.alugueis = new ArrayList<Aluguel> ();
+        alugueis.addAll(listaAluguel);
+        funcionario.addComissao(getValorTotal());
     }
 
     public Cliente getCliente () {
@@ -49,12 +51,23 @@ public class Locacao extends Entidade {
         return alugueis;
     }
 
+    public double getValorTotal () {
+        double valorTotal = 0;
+        for (Aluguel aluguel : alugueis) {
+            valorTotal += aluguel.getValorTotal();
+        }
+        return valorTotal;
+    }
+
     @Override
     public String toString () {
-        String txt = this.cliente + "\n" + "Funcionario: " + this.funcionario.getNome() + "\n";
+        String txt = this.cliente + "" +  this.funcionario + "\n";
         for (Aluguel aluguel : alugueis) {
             txt += aluguel + "\n";
         }
+        txt += "Id locacao: " + this.getId();
+        txt += "\n";
+        txt += "----------------------------------------\n";
         return txt;
     }
 }
